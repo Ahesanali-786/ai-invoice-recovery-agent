@@ -30,7 +30,8 @@ cmds = [
   "cp backend/.env.example backend/.env 2>/dev/null || echo 'APP_NAME=\"Invoice Recovery Agent\"' > backend/.env",
   "cd backend && php artisan key:generate --ansi 2>/dev/null || true",
   "cd frontend && npm ci",
-  "cd frontend && npm run build"
+  "cd frontend && npm run build",
+  "ls -la backend/public/"
 ]
 
 [start]
