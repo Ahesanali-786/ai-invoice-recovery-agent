@@ -10,7 +10,8 @@ import './index.css'
 import { AuthProvider } from './hooks/useAuth'
 
 // Configure axios base URL for backend API
-axios.defaults.baseURL = 'http://localhost:8000'
+// Use relative URL for production (same domain), localhost for development
+axios.defaults.baseURL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : ''
 
 const queryClient = new QueryClient({
   defaultOptions: {
