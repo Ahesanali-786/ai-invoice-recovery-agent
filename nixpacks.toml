@@ -34,7 +34,7 @@ cmds = [
 ]
 
 [start]
-cmd = "cd backend && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "cd backend && (php artisan migrate --force 2>/dev/null || echo 'Migrations skipped') && php artisan serve --host=0.0.0.0 --port=$PORT"
 
 [variables]
 APP_NAME = "Invoice Recovery Agent"

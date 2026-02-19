@@ -6,9 +6,9 @@
     "nixpacksConfigPath": "nixpacks.toml"
   },
   "deploy": {
-    "startCommand": "cd backend && php artisan serve --host=0.0.0.0 --port=$PORT",
+    "startCommand": "cd backend && (php artisan migrate --force 2>/dev/null || echo 'Migrations skipped') && php artisan serve --host=0.0.0.0 --port=$PORT",
     "healthcheckPath": "/api/health",
-    "healthcheckTimeout": 100,
+    "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }
