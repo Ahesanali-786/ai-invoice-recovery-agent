@@ -16,8 +16,7 @@ nixPkgs = [
   "php83Extensions.tokenizer",
   "php83Extensions.json",
   "php83Extensions.fileinfo",
-  "nodejs_20",
-  "npm-9_x"
+  "nodejs_20"
 ]
 
 [phases.install]
