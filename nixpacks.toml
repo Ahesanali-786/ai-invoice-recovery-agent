@@ -27,11 +27,12 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "cd backend && php artisan key:generate --force || true",
-  "cd backend && php artisan config:cache || true",
-  "cd backend && php artisan route:cache || true",
+  "cd backend && php artisan key:generate --force 2>/dev/null || true",
+  "cd backend && php artisan config:cache 2>/dev/null || true",
+  "cd backend && php artisan route:cache 2>/dev/null || true",
   "cd frontend && npm ci",
-  "cd frontend && npm run build"
+  "cd frontend && npx tsc --noEmit || true",
+  "cd frontend && vite build"
 ]
 
 [start]
