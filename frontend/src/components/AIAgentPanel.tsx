@@ -5,7 +5,6 @@ import {
   SparklesIcon,
   PaperAirplaneIcon,
   XMarkIcon,
-  ChatBubbleLeftIcon,
   UserIcon,
   BoltIcon,
   LightBulbIcon,
@@ -78,7 +77,9 @@ export default function AIAgentPanel() {
         setInput('')
         refetchMessages()
       },
-      onError: () => toast.error('Failed to send message'),
+      onError: () => {
+        toast.error('Failed to send message')
+      },
     }
   )
 
@@ -89,7 +90,9 @@ export default function AIAgentPanel() {
         toast.success(response.data.message || 'Action completed!')
         refetchMessages()
       },
-      onError: () => toast.error('Failed to execute action'),
+      onError: () => {
+        toast.error('Failed to execute action')
+      },
     }
   )
 

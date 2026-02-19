@@ -399,7 +399,7 @@ function EmailTemplatesSection() {
         queryClient.invalidateQueries('emailTemplates')
         toast.success('Template saved successfully')
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error('Failed to save template')
       },
     }
@@ -419,7 +419,7 @@ function EmailTemplatesSection() {
         })
         toast.success('Template deleted. Default will be used.')
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error('Failed to delete template')
       },
     }
@@ -433,7 +433,7 @@ function EmailTemplatesSection() {
         setPreview(data)
         setShowPreview(true)
       },
-      onError: (err: any) => {
+      onError: () => {
         toast.error('Failed to generate preview')
       },
     }

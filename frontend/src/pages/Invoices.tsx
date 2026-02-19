@@ -62,7 +62,9 @@ export default function Invoices() {
         setIsModalOpen(false)
         toast.success('Invoice created successfully')
       },
-      onError: () => toast.error('Failed to create invoice'),
+      onError: () => {
+        toast.error('Failed to create invoice')
+      },
     }
   )
 
@@ -73,7 +75,9 @@ export default function Invoices() {
         queryClient.invalidateQueries('invoices')
         toast.success('Invoice marked as paid')
       },
-      onError: () => toast.error('Failed to mark as paid'),
+      onError: () => {
+        toast.error('Failed to mark as paid')
+      },
     }
   )
 
@@ -81,8 +85,12 @@ export default function Invoices() {
     ({ id, type }: { id: number; type: string }) =>
       axios.post(`/api/invoices/${id}/reminders`, { type }),
     {
-      onSuccess: () => toast.success('Reminder sent successfully'),
-      onError: () => toast.error('Failed to send reminder'),
+      onSuccess: () => {
+        toast.success('Reminder sent successfully')
+      },
+      onError: () => {
+        toast.error('Failed to send reminder')
+      },
     }
   )
 
@@ -101,7 +109,7 @@ export default function Invoices() {
     }
   )
   const sendEmailMutation = useMutation(
-    () => axios.post('/api/communications/start-from-invoice', {
+    (_: void) => axios.post('/api/communications/start-from-invoice', {
       invoice_id: emailInvoice?.id,
       subject: emailSubject,
       body: emailBody,
@@ -114,7 +122,9 @@ export default function Invoices() {
         setEmailBody('')
         setEmailInvoice(null)
       },
-      onError: () => toast.error('Failed to send email'),
+      onError: () => {
+        toast.error('Failed to send email')
+      },
     }
   )
 

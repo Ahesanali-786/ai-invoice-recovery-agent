@@ -31,7 +31,9 @@ export default function Profile() {
         setIsEditing(false)
         toast.success('Profile updated successfully')
       },
-      onError: () => toast.error('Failed to update profile'),
+      onError: () => {
+        toast.error('Failed to update profile')
+      },
     }
   )
 

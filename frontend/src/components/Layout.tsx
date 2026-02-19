@@ -4,10 +4,10 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
 import {
   BuildingOfficeIcon, UsersIcon, DocumentTextIcon, ChartBarIcon, ChartPieIcon,
-  UserCircleIcon, Cog6ToothIcon, BellIcon, Bars3Icon, XMarkIcon,
+  UserCircleIcon, Cog6ToothIcon, Bars3Icon, XMarkIcon,
   ChevronDownIcon, CheckIcon, SparklesIcon
 } from '@heroicons/react/24/outline'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import AIAgentPanel from './AIAgentPanel'
 
@@ -30,7 +30,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false)
   const { user, logout } = useAuth()
   const location = useLocation()
-  const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const { data: organizations } = useQuery('organizations', () =>

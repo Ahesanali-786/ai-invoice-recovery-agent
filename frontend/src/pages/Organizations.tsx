@@ -1,16 +1,12 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
-import { 
-  BuildingOfficeIcon, 
-  UsersIcon, 
-  PlusIcon, 
-  TrashIcon, 
-  PencilIcon,
+import {
+  BuildingOfficeIcon,
+  UsersIcon,
+  PlusIcon,
   CheckIcon,
   XMarkIcon,
-  ChevronDownIcon,
-  ShieldCheckIcon,
   UserGroupIcon
 } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
@@ -64,7 +60,9 @@ export default function Organizations() {
         setIsCreateModalOpen(false)
         toast.success('Organization created successfully')
       },
-      onError: () => toast.error('Failed to create organization'),
+      onError: () => {
+        toast.error('Failed to create organization')
+      },
     }
   )
 
@@ -76,7 +74,9 @@ export default function Organizations() {
         queryClient.invalidateQueries('user')
         toast.success('Switched organization')
       },
-      onError: () => toast.error('Failed to switch organization'),
+      onError: () => {
+        toast.error('Failed to switch organization')
+      },
     }
   )
 
@@ -89,7 +89,9 @@ export default function Organizations() {
         queryClient.invalidateQueries(['members', selectedOrg?.id])
         toast.success('Invitation sent')
       },
-      onError: () => toast.error('Failed to send invitation'),
+      onError: () => {
+        toast.error('Failed to send invitation')
+      },
     }
   )
 
@@ -148,9 +150,8 @@ export default function Organizations() {
         {organizations?.map((org: Organization) => (
           <div
             key={org.id}
-            className={`bg-white rounded-lg shadow p-6 border-2 ${
-              org.is_current ? 'border-primary-500' : 'border-transparent'
-            }`}
+            className={`bg-white rounded-lg shadow p-6 border-2 ${org.is_current ? 'border-primary-500' : 'border-transparent'
+              }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -163,11 +164,10 @@ export default function Organizations() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{org.name}</h3>
-                  <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                    org.role === 'owner' ? 'bg-purple-100 text-purple-800' :
-                    org.role === 'admin' ? 'bg-blue-100 text-blue-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${org.role === 'owner' ? 'bg-purple-100 text-purple-800' :
+                      org.role === 'admin' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                    }`}>
                     {org.role}
                   </span>
                 </div>
@@ -335,11 +335,10 @@ export default function Organizations() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                      member.role === 'owner' ? 'bg-purple-100 text-purple-800' :
-                      member.role === 'admin' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${member.role === 'owner' ? 'bg-purple-100 text-purple-800' :
+                        member.role === 'admin' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                      }`}>
                       {member.role}
                     </span>
                     {member.last_accessed_at && (

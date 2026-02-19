@@ -4,7 +4,6 @@ import { format, parseISO, differenceInDays } from 'date-fns'
 import {
   ArrowUpRightIcon,
   ArrowDownRightIcon,
-  CurrencyDollarIcon,
   UsersIcon,
   DocumentTextIcon,
   ExclamationTriangleIcon,

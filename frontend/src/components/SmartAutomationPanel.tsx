@@ -8,7 +8,6 @@ import {
   ChartBarIcon,
   EnvelopeIcon,
   DevicePhoneMobileIcon,
-  PlayIcon,
   StopIcon,
   EyeIcon,
   ArrowPathIcon,
@@ -112,7 +111,9 @@ export default function SmartAutomationPanel() {
         toast.success('Automation stopped')
         queryClient.invalidateQueries('smart-automations')
       },
-      onError: () => toast.error('Failed to stop automation'),
+      onError: () => {
+        toast.error('Failed to stop automation')
+      },
     }
   )
 
@@ -124,7 +125,9 @@ export default function SmartAutomationPanel() {
         toast.success(`Analyzed ${res.data.results.analyzed} clients!`)
         queryClient.invalidateQueries('client-behaviors')
       },
-      onError: () => toast.error('Failed to analyze clients'),
+      onError: () => {
+        toast.error('Failed to analyze clients')
+      },
     }
   )
 
@@ -239,22 +242,20 @@ export default function SmartAutomationPanel() {
         <div className="flex gap-4">
           <button
             onClick={() => setActiveTab('automations')}
-            className={`flex items-center gap-2 py-3 px-4 text-sm font-medium border-b-2 ${
-              activeTab === 'automations'
+            className={`flex items-center gap-2 py-3 px-4 text-sm font-medium border-b-2 ${activeTab === 'automations'
                 ? 'border-violet-500 text-violet-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+              }`}
           >
             <BoltIcon className="h-5 w-5" />
             Active Automations
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`flex items-center gap-2 py-3 px-4 text-sm font-medium border-b-2 ${
-              activeTab === 'insights'
+            className={`flex items-center gap-2 py-3 px-4 text-sm font-medium border-b-2 ${activeTab === 'insights'
                 ? 'border-violet-500 text-violet-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+              }`}
           >
             <ChartBarIcon className="h-5 w-5" />
             Client Insights
@@ -407,11 +408,10 @@ export default function SmartAutomationPanel() {
                     <button
                       key={stage}
                       onClick={() => setPreviewStage(stage)}
-                      className={`px-3 py-1 rounded text-sm font-medium ${
-                        previewStage === stage
+                      className={`px-3 py-1 rounded text-sm font-medium ${previewStage === stage
                           ? getStageColor(stage)
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                        }`}
                     >
                       {stage.charAt(0).toUpperCase() + stage.slice(1)}
                     </button>
@@ -454,7 +454,7 @@ export default function SmartAutomationPanel() {
                   ✕
                 </button>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 p-3 rounded">

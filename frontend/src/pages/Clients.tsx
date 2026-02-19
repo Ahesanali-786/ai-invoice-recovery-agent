@@ -32,7 +32,9 @@ export default function Clients() {
         setIsModalOpen(false)
         toast.success('Client created successfully')
       },
-      onError: () => toast.error('Failed to create client'),
+      onError: () => {
+        toast.error('Failed to create client')
+      },
     }
   )
 
@@ -45,7 +47,9 @@ export default function Clients() {
         setEditingClient(null)
         toast.success('Client updated successfully')
       },
-      onError: () => toast.error('Failed to update client'),
+      onError: () => {
+        toast.error('Failed to update client')
+      },
     }
   )
 
@@ -56,7 +60,9 @@ export default function Clients() {
         queryClient.invalidateQueries('clients')
         toast.success('Client deleted successfully')
       },
-      onError: () => toast.error('Failed to delete client'),
+      onError: () => {
+        toast.error('Failed to delete client')
+      },
     }
   )
 

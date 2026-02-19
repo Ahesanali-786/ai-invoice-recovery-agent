@@ -9,7 +9,6 @@ import {
   UsersIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
-  CalendarIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/outline'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'

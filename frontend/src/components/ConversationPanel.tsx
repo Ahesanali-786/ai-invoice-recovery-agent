@@ -5,9 +5,7 @@ import {
   EnvelopeIcon,
   ChatBubbleLeftRightIcon,
   PaperAirplaneIcon,
-  CheckCircleIcon,
   XMarkIcon,
-  ExclamationCircleIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
@@ -100,7 +98,9 @@ export default function ConversationPanel() {
           fetchConversation(selectedConversation.id)
         }
       },
-      onError: () => toast.error('Failed to send reply'),
+      onError: () => {
+        toast.error('Failed to send reply')
+      },
     }
   )
 
@@ -112,7 +112,9 @@ export default function ConversationPanel() {
         toast.success('Conversation closed')
         queryClient.invalidateQueries('conversations')
       },
-      onError: () => toast.error('Failed to close conversation'),
+      onError: () => {
+        toast.error('Failed to close conversation')
+      },
     }
   )
 
@@ -181,11 +183,10 @@ export default function ConversationPanel() {
               <div
                 key={conv.id}
                 onClick={() => fetchConversation(conv.id)}
-                className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                  selectedConversation?.id === conv.id
+                className={`p-3 rounded-lg border cursor-pointer transition-colors ${selectedConversation?.id === conv.id
                     ? 'bg-violet-50 border-violet-500'
                     : 'bg-white hover:bg-gray-50 border-gray-200'
-                } ${conv.unread_count > 0 ? 'border-l-4 border-l-red-500' : ''}`}
+                  } ${conv.unread_count > 0 ? 'border-l-4 border-l-red-500' : ''}`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
@@ -255,16 +256,14 @@ export default function ConversationPanel() {
                   {selectedConversation.messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex gap-3 ${
-                        message.direction === 'outgoing' ? 'flex-row-reverse' : ''
-                      }`}
+                      className={`flex gap-3 ${message.direction === 'outgoing' ? 'flex-row-reverse' : ''
+                        }`}
                     >
                       <div
-                        className={`p-2 rounded-lg ${
-                          message.direction === 'outgoing'
+                        className={`p-2 rounded-lg ${message.direction === 'outgoing'
                             ? 'bg-violet-600 text-white'
                             : 'bg-gray-100 text-gray-800'
-                        }`}
+                          }`}
                       >
                         {message.direction === 'outgoing' ? (
                           <UserCircleIcon className="h-5 w-5" />
@@ -273,16 +272,14 @@ export default function ConversationPanel() {
                         )}
                       </div>
                       <div
-                        className={`flex-1 max-w-[80%] ${
-                          message.direction === 'outgoing' ? 'text-right' : ''
-                        }`}
+                        className={`flex-1 max-w-[80%] ${message.direction === 'outgoing' ? 'text-right' : ''
+                          }`}
                       >
                         <div
-                          className={`inline-block px-4 py-2 rounded-lg text-sm ${
-                            message.direction === 'outgoing'
+                          className={`inline-block px-4 py-2 rounded-lg text-sm ${message.direction === 'outgoing'
                               ? 'bg-violet-600 text-white'
                               : 'bg-gray-100 text-gray-800'
-                          }`}
+                            }`}
                         >
                           <div
                             className="prose prose-sm max-w-none"
