@@ -14,7 +14,6 @@ nixPkgs = [
   "php83Extensions.curl",
   "php83Extensions.openssl",
   "php83Extensions.tokenizer",
-  "php83Extensions.json",
   "php83Extensions.fileinfo",
   "nodejs_20"
 ]
