@@ -27,11 +27,10 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "cd backend && php artisan key:generate --force 2>/dev/null || true",
-  "cd backend && php artisan config:cache 2>/dev/null || true",
-  "cd backend && php artisan route:cache 2>/dev/null || true",
+  "cp backend/.env.example backend/.env 2>/dev/null || echo 'APP_NAME=\"Invoice Recovery Agent\"' > backend/.env",
+  "cd backend && php artisan key:generate --ansi 2>/dev/null || true",
   "cd frontend && npm ci",
-  "cd frontend && npx tsc --noEmit || true",
+  "cd frontend && npx tsc --noEmit 2>/dev/null || true",
   "cd frontend && vite build"
 ]
 
@@ -39,7 +38,9 @@ cmds = [
 cmd = "cd backend && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
 
 [variables]
+APP_NAME = "Invoice Recovery Agent"
 APP_ENV = "production"
+APP_KEY = "base64:your-app-key-here-generate-in-railway-dashboard"
 APP_DEBUG = "false"
 LOG_CHANNEL = "stderr"
 CACHE_DRIVER = "redis"
