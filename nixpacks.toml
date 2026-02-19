@@ -27,23 +27,26 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "cp backend/.env.example backend/.env 2>/dev/null || echo 'APP_NAME=\"Invoice Recovery Agent\"' > backend/.env",
-  "cd backend && php artisan key:generate --ansi 2>/dev/null || true",
   "mkdir -p backend/public",
   "cd frontend && npm ci",
   "cd frontend && npx vite build --outDir ../backend/public --emptyOutDir",
-  "echo '=== Build output ===' && ls -la backend/public/"
+  "echo '=== Build output ===' && ls -la backend/public/",
+  "cd backend && cp .env.example .env 2>/dev/null || echo 'APP_NAME=Invoice Recovery Agent' > .env",
+  "cd backend && php artisan key:generate --ansi 2>/dev/null || true",
+  "cd backend && php artisan config:cache 2>/dev/null || true",
+  "cd backend && php artisan route:cache 2>/dev/null || true"
 ]
 
 [start]
-cmd = "cd backend && (php artisan migrate --force 2>/dev/null || echo 'Migrations skipped') && php artisan serve --host=0.0.0.0 --port=$PORT"
+# Production: Use PHP built-in server with proper document root
+cmd = "cd backend && php -S 0.0.0.0:$PORT -t public router.php"
 
 [variables]
 APP_NAME = "Invoice Recovery Agent"
 APP_ENV = "production"
-APP_KEY = "base64:your-app-key-here-generate-in-railway-dashboard"
 APP_DEBUG = "false"
 LOG_CHANNEL = "stderr"
-CACHE_DRIVER = "redis"
-SESSION_DRIVER = "redis"
-QUEUE_CONNECTION = "redis"
+LOG_LEVEL = "error"
+CACHE_DRIVER = "file"
+SESSION_DRIVER = "file"
+QUEUE_CONNECTION = "sync"
