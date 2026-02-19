@@ -1,0 +1,46 @@
+[phases.setup]
+nixPkgs = [
+  "php83", 
+  "php83Packages.composer",
+  "php83Extensions.pdo_mysql",
+  "php83Extensions.mbstring",
+  "php83Extensions.exif",
+  "php83Extensions.pcntl",
+  "php83Extensions.bcmath",
+  "php83Extensions.gd",
+  "php83Extensions.zip",
+  "php83Extensions.redis",
+  "php83Extensions.xml",
+  "php83Extensions.curl",
+  "php83Extensions.openssl",
+  "php83Extensions.tokenizer",
+  "php83Extensions.json",
+  "php83Extensions.fileinfo",
+  "nodejs_20",
+  "npm-9_x"
+]
+
+[phases.install]
+cmds = [
+  "cd backend && composer install --no-interaction --prefer-dist --optimize-autoloader"
+]
+
+[phases.build]
+cmds = [
+  "cd backend && php artisan key:generate --force || true",
+  "cd backend && php artisan config:cache || true",
+  "cd backend && php artisan route:cache || true",
+  "cd frontend && npm ci",
+  "cd frontend && npm run build"
+]
+
+[start]
+cmd = "cd backend && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+
+[variables]
+APP_ENV = "production"
+APP_DEBUG = "false"
+LOG_CHANNEL = "stderr"
+CACHE_DRIVER = "redis"
+SESSION_DRIVER = "redis"
+QUEUE_CONNECTION = "redis"
