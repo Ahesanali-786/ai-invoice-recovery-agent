@@ -20,6 +20,8 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
+  "mkdir -p backend/bootstrap/cache backend/storage/framework/cache backend/storage/framework/sessions backend/storage/framework/testing backend/storage/framework/views backend/storage/logs backend/storage/app/public",
+  "chmod -R 755 backend/bootstrap backend/storage",
   "cd backend && composer install --no-interaction --prefer-dist --optimize-autoloader"
 ]
 
