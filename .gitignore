@@ -1,0 +1,71 @@
+# Node.js / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+frontend/.env
+frontend/.env.local
+
+# PHP / Backend
+backend/vendor/
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/Homestead.yaml
+backend/Homestead.json
+backend/auth.json
+backend/.phpunit.result.cache
+backend/phpunit.xml
+backend/.php_cs.cache
+backend/.php-cs-fixer.cache
+
+# Laravel
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/storage/pail
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/testing/*
+backend/storage/framework/views/*
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+backend/bootstrap/cache/services.php
+backend/bootstrap/cache/packages.php
+backend/.rnd
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.docker/
+
+# MySQL
+*.sql
+data/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Testing
+/coverage
+.nyc_output
+
+# Misc
+*.tgz
+*.tar.gz
+*.zip
