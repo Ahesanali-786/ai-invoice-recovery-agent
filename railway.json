@@ -5,7 +5,17 @@
     "nixpacksConfigPath": "nixpacks.toml"
   },
   "deploy": {
-    "startCommand": "cd backend && php -S 0.0.0.0:$PORT -t public router.php",
+    "multiProcess": {
+      "web": {
+        "startCommand": "cd backend && php -S 0.0.0.0:$PORT -t public router.php"
+      },
+      "queue": {
+        "startCommand": "cd backend && php artisan queue:work --sleep=3 --tries=3 --timeout=60"
+      },
+      "scheduler": {
+        "startCommand": "cd backend && while true; do php artisan schedule:run; sleep 60; done"
+      }
+    },
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
