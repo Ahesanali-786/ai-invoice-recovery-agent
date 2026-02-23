@@ -46,10 +46,7 @@ services:
       - key: DB_USERNAME
         value: laravel
       - key: DB_PASSWORD
-        fromService:
-          name: ai-recovery-mysql
-          type: pserv
-          property: MYSQL_PASSWORD
+        sync: false
       - key: CACHE_DRIVER
         value: file
       - key: SESSION_DRIVER
