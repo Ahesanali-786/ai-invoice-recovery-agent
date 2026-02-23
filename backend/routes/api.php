@@ -17,13 +17,12 @@ use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Explicit binding for Organization to use ID in API routes
-Route::bind('organization', function ($value) {
-    return Organization::where('id', $value)->firstOrFail();
-});
+Route::middleware(['api'])->group(function () {
 
+// Health check - no auth required
 Route::get('/health', fn() => ['status' => 'ok']);
 
+// Auth routes - no auth required
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
@@ -33,6 +32,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
+// Protected routes - auth required
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -133,5 +133,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+// Webhooks - outside auth but still need api middleware for CORS
 Route::post('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'handle']);
 Route::get('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'verify']);
