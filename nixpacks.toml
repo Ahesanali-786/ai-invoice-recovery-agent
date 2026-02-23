@@ -7,7 +7,23 @@ nixPkgs = [
   "php83Extensions.tokenizer",
   "php83Extensions.xml",
   "php83Extensions.curl",
-  "php83Extensions.openssl"
+  "php83Extensions.openssl",
+  "php83Extensions.bcmath",
+  "php83Extensions.calendar",
+  "php83Extensions.exif",
+  "php83Extensions.fileinfo",
+  "php83Extensions.gd",
+  "php83Extensions.iconv",
+  "php83Extensions.intl",
+  "php83Extensions.pdo",
+  "php83Extensions.pdo_sqlite",
+  "php83Extensions.session",
+  "php83Extensions.simplexml",
+  "php83Extensions.sqlite3",
+  "php83Extensions.xmlreader",
+  "php83Extensions.xmlwriter",
+  "php83Extensions.zip",
+  "php83Extensions.zlib"
 ]
 
 [phases.install]

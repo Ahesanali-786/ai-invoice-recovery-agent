@@ -1,0 +1,10 @@
+FROM mysql:8.0
+
+# Copy custom configuration if needed
+# COPY my.cnf /etc/mysql/conf.d/
+
+# Expose MySQL port
+EXPOSE 3306
+
+# Start MySQL
+CMD ["mysqld"]

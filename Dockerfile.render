@@ -1,0 +1,87 @@
+# Multi-stage build for AI Recovery Agent
+
+# Stage 1: Build Frontend
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+
+# Copy frontend package files
+COPY frontend/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy frontend source
+COPY frontend/ .
+
+# Build frontend (API calls will use relative paths in production)
+ENV VITE_API_URL=/api
+RUN npm run build
+
+# Stage 2: Setup Backend with Apache
+FROM php:8.3-apache
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    default-mysql-client \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql pdo pdo_sqlite mbstring exif pcntl bcmath gd zip intl
+
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy backend files
+COPY backend/ .
+
+# Copy built frontend from stage 1 to public folder
+COPY --from=frontend-builder /app/frontend/dist/ ./public/
+
+# Ensure proper permissions for Laravel storage and cache
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# Configure Apache DocumentRoot to point to public folder
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+
+# Update Apache config to allow .htaccess
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf 2>/dev/null || true
+
+# Create .htaccess for Laravel
+RUN echo '<IfModule mod_rewrite.c>\n\
+RewriteEngine On\n\
+RewriteCond %{HTTP:Authorization} .\n\
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]\n\
+RewriteCond %{REQUEST_FILENAME} !-d\n\
+RewriteCond %{REQUEST_FILENAME} !-f\n\
+RewriteRule ^ index.php [L]\n\
+</IfModule>' > /var/www/html/public/.htaccess
+
+# Copy startup script
+COPY docker/render-start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Expose port
+EXPOSE 80
+
+# Start command
+CMD ["/usr/local/bin/start.sh"]

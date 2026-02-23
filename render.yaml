@@ -1,0 +1,86 @@
+services:
+  # MySQL Database Service
+  - type: pserv
+    name: ai-recovery-mysql
+    env: docker
+    dockerfilePath: Dockerfile.mysql
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+      - key: MYSQL_DATABASE
+        value: invoice_recovery
+      - key: MYSQL_USER
+        value: laravel
+      - key: MYSQL_PASSWORD
+        generateValue: true
+
+  # Backend + Frontend Web Service
+  - type: web
+    name: ai-recovery-agent
+    env: docker
+    dockerfilePath: Dockerfile.render
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://ai-recovery-agent.onrender.com
+      - key: FRONTEND_URL
+        value: https://ai-recovery-agent.onrender.com
+      # MySQL Configuration - uses internal Render network
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: ai-recovery-mysql
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: invoice_recovery
+      - key: DB_USERNAME
+        value: laravel
+      - key: DB_PASSWORD
+        fromService:
+          name: ai-recovery-mysql
+          type: pserv
+          property: MYSQL_PASSWORD
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: ai-recovery-agent.onrender.com
+      - key: SESSION_DOMAIN
+        value: ai-recovery-agent.onrender.com
+      # External services - set in dashboard
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        value: https://ai-recovery-agent.onrender.com/api/auth/google/callback
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_ENCRYPTION
+        value: tls
+    healthCheckPath: /up
