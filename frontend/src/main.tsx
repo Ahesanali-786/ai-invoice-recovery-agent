@@ -10,8 +10,8 @@ import './index.css'
 import { AuthProvider } from './hooks/useAuth'
 
 // Configure axios base URL for backend API
-// Use relative URL for production (same domain), localhost for development
-axios.defaults.baseURL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : ''
+// Use VITE_API_URL env var for production, localhost for development
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '')
 
 const queryClient = new QueryClient({
   defaultOptions: {
