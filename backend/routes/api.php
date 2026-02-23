@@ -29,6 +29,8 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/google', [AuthController::class, 'redirectToGoogle']);
     Route::get('/google/callback', [AuthController::class, 'handleGoogleCallback']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -37,6 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::put('/settings', [AuthController::class, 'updateSettings']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::post('/avatar/upload', [AuthController::class, 'uploadAvatar']);
+    Route::delete('/avatar', [AuthController::class, 'removeAvatar']);
 
     // Organization Routes
     Route::get('/organizations', [OrganizationController::class, 'index']);
@@ -63,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('clients', ClientController::class);
+
+    Route::get('/invoices/next-number', [InvoiceController::class, 'getNextInvoiceNumber']);
     Route::apiResource('invoices', InvoiceController::class);
 
     Route::post('/invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid']);

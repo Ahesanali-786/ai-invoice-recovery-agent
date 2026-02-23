@@ -182,4 +182,40 @@ class InvoiceController extends Controller
 
         return $pdfService->stream($invoice);
     }
+
+    /**
+     * Generate the next invoice number for the authenticated user.
+     * Format: INV-001, INV-002, etc.
+     */
+    private function generateNextInvoiceNumber($userId): string
+    {
+        $lastInvoice = Invoice::where('user_id', $userId)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if (!$lastInvoice) {
+            return 'INV-001';
+        }
+
+        // Extract number from last invoice number (e.g., INV-001 -> 1)
+        $lastNumber = 0;
+        if (preg_match('/INV-(\d+)/', $lastInvoice->invoice_number, $matches)) {
+            $lastNumber = intval($matches[1]);
+        }
+
+        $nextNumber = $lastNumber + 1;
+        return 'INV-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Get the next available invoice number for the authenticated user.
+     */
+    public function getNextInvoiceNumber(Request $request): JsonResponse
+    {
+        $invoiceNumber = $this->generateNextInvoiceNumber($request->user()->id);
+
+        return response()->json([
+            'invoice_number' => $invoiceNumber
+        ]);
+    }
 }

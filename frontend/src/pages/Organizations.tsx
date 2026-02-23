@@ -7,9 +7,16 @@ import {
   PlusIcon,
   CheckIcon,
   XMarkIcon,
-  UserGroupIcon
+  UserGroupIcon,
+  ArrowPathIcon,
+  EnvelopeIcon,
+  ShieldCheckIcon,
+  BriefcaseIcon,
+  EyeIcon,
+  ChartPieIcon,
 } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
+import { format } from 'date-fns'
 
 interface Organization {
   id: number
@@ -33,11 +40,11 @@ interface Member {
 }
 
 const ROLES = [
-  { value: 'owner', label: 'Owner', description: 'Full access to everything' },
-  { value: 'admin', label: 'Admin', description: 'Can manage team and settings' },
-  { value: 'manager', label: 'Manager', description: 'Can create invoices and manage clients' },
-  { value: 'accountant', label: 'Accountant', description: 'Can view reports and manage payments' },
-  { value: 'viewer', label: 'Viewer', description: 'View only access' },
+  { value: 'owner', label: 'Owner', description: 'Full access to everything', icon: ShieldCheckIcon, color: 'bg-violet-100 text-violet-700 border-violet-200' },
+  { value: 'admin', label: 'Admin', description: 'Can manage team and settings', icon: ShieldCheckIcon, color: 'bg-blue-100 text-blue-700 border-blue-200' },
+  { value: 'manager', label: 'Manager', description: 'Can create invoices and manage clients', icon: BriefcaseIcon, color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  { value: 'accountant', label: 'Accountant', description: 'Can view reports and manage payments', icon: ChartPieIcon, color: 'bg-amber-100 text-amber-700 border-amber-200' },
+  { value: 'viewer', label: 'Viewer', description: 'View only access', icon: EyeIcon, color: 'bg-slate-100 text-slate-700 border-slate-200' },
 ]
 
 export default function Organizations() {
@@ -124,21 +131,37 @@ export default function Organizations() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     )
   }
 
+  const getRoleStyle = (role: string) => {
+    const roleConfig = ROLES.find(r => r.value === role)
+    return roleConfig?.color || 'bg-slate-100 text-slate-700 border-slate-200'
+  }
+
+  const getRoleLabel = (role: string) => {
+    const roleConfig = ROLES.find(r => r.value === role)
+    return roleConfig?.label || role
+  }
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Organizations</h1>
-          <p className="text-gray-600">Manage your companies and teams</p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <BuildingOfficeIcon className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-slate-900">Organizations</h1>
+            <p className="text-sm text-slate-500">Manage your companies and teams</p>
+          </div>
         </div>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
         >
           <PlusIcon className="h-5 w-5" />
           New Organization
@@ -146,45 +169,45 @@ export default function Organizations() {
       </div>
 
       {/* Organizations Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {organizations?.map((org: Organization) => (
           <div
             key={org.id}
-            className={`bg-white rounded-lg shadow p-6 border-2 ${org.is_current ? 'border-primary-500' : 'border-transparent'
+            className={`bg-white rounded-xl border p-5 transition-all hover:shadow-md ${org.is_current
+                ? 'border-blue-500 shadow-md shadow-blue-500/10'
+                : 'border-slate-200'
               }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-lg bg-primary-100 flex items-center justify-center">
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${org.is_current ? 'bg-blue-50' : 'bg-slate-50'
+                  }`}>
                   {org.logo ? (
-                    <img src={org.logo} alt={org.name} className="h-8 w-8 rounded" />
+                    <img src={org.logo} alt={org.name} className="h-8 w-8 rounded-lg object-cover" />
                   ) : (
-                    <BuildingOfficeIcon className="h-6 w-6 text-primary-600" />
+                    <BuildingOfficeIcon className={`h-6 w-6 ${org.is_current ? 'text-blue-600' : 'text-slate-500'}`} />
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{org.name}</h3>
-                  <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${org.role === 'owner' ? 'bg-purple-100 text-purple-800' :
-                      org.role === 'admin' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                    }`}>
-                    {org.role}
+                  <h3 className="font-semibold text-slate-900">{org.name}</h3>
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium border ${getRoleStyle(org.role)}`}>
+                    {getRoleLabel(org.role)}
                   </span>
                 </div>
               </div>
               {org.is_current && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">
                   <CheckIcon className="h-3 w-3" />
                   Active
                 </span>
               )}
             </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t border-slate-100">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">Member since</span>
-                <span className="text-gray-900">
-                  {new Date(org.joined_at).toLocaleDateString()}
+                <span className="text-slate-500">Member since</span>
+                <span className="text-slate-900 font-medium">
+                  {format(new Date(org.joined_at), 'MMM d, yyyy')}
                 </span>
               </div>
             </div>
@@ -194,9 +217,13 @@ export default function Organizations() {
                 <button
                   onClick={() => switchMutation.mutate(org.id)}
                   disabled={switchMutation.isLoading}
-                  className="flex-1 px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-md hover:bg-primary-100"
+                  className="flex-1 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border border-blue-100"
                 >
-                  Switch
+                  {switchMutation.isLoading ? (
+                    <ArrowPathIcon className="h-4 w-4 animate-spin mx-auto" />
+                  ) : (
+                    'Switch'
+                  )}
                 </button>
               )}
               {(org.role === 'owner' || org.role === 'admin') && (
@@ -205,7 +232,7 @@ export default function Organizations() {
                     setSelectedOrg(org)
                     setIsMembersModalOpen(true)
                   }}
-                  className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 flex items-center justify-center gap-1"
+                  className="flex-1 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200 flex items-center justify-center gap-1.5"
                 >
                   <UsersIcon className="h-4 w-4" />
                   Members
@@ -218,46 +245,57 @@ export default function Organizations() {
 
       {/* Create Organization Modal */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Create New Organization</h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-semibold text-slate-900">Create New Organization</h2>
+              <button
+                onClick={() => setIsCreateModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
+            </div>
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Organization Name</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Organization Name</label>
                 <input
                   type="text"
                   name="name"
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                  className="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
                   placeholder="Acme Inc."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email (Optional)</label>
-                <input
-                  type="email"
-                  name="email"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                  placeholder="contact@company.com"
-                />
+                <label className="block text-sm font-medium text-slate-700 mb-1">Email (Optional)</label>
+                <div className="relative">
+                  <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    className="block w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    placeholder="contact@company.com"
+                  />
+                </div>
               </div>
-              <div className="bg-blue-50 p-3 rounded-md">
+              <div className="bg-blue-50 p-3 rounded-xl border border-blue-100">
                 <p className="text-sm text-blue-700">
                   <strong>14-day free trial included.</strong> No credit card required.
                 </p>
               </div>
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-500"
+                  className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isLoading}
-                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {createMutation.isLoading ? 'Creating...' : 'Create Organization'}
                 </button>
@@ -269,94 +307,105 @@ export default function Organizations() {
 
       {/* Members Modal */}
       {isMembersModalOpen && selectedOrg && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 p-6 max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {selectedOrg.name} - Team Members
-              </h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <UsersIcon className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-900">{selectedOrg.name}</h2>
+                  <p className="text-xs text-slate-500">Team Members</p>
+                </div>
+              </div>
               <button
                 onClick={() => setIsMembersModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Invite Form */}
-            {selectedOrg.role === 'owner' || selectedOrg.role === 'admin' ? (
-              <form onSubmit={handleInvite} className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Invite New Member</h3>
-                <div className="flex gap-3">
-                  <input
-                    type="email"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="Email address"
-                    className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    required
-                  />
-                  <select
-                    value={inviteRole}
-                    onChange={(e) => setInviteRole(e.target.value)}
-                    className="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                  >
-                    {ROLES.filter(r => r.value !== 'owner').map((role) => (
-                      <option key={role.value} value={role.value}>{role.label}</option>
-                    ))}
-                  </select>
-                  <button
-                    type="submit"
-                    disabled={inviteMutation.isLoading}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
-                  >
-                    Invite
-                  </button>
-                </div>
-              </form>
-            ) : null}
+            <div className="p-5 overflow-y-auto">
+              {/* Invite Form */}
+              {(selectedOrg.role === 'owner' || selectedOrg.role === 'admin') && (
+                <form onSubmit={handleInvite} className="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                  <h3 className="text-sm font-medium text-slate-900 mb-3">Invite New Member</h3>
+                  <div className="flex gap-3">
+                    <div className="relative flex-1">
+                      <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input
+                        type="email"
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        placeholder="Email address"
+                        className="block w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                        required
+                      />
+                    </div>
+                    <select
+                      value={inviteRole}
+                      onChange={(e) => setInviteRole(e.target.value)}
+                      className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    >
+                      {ROLES.filter(r => r.value !== 'owner').map((role) => (
+                        <option key={role.value} value={role.value}>{role.label}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="submit"
+                      disabled={inviteMutation.isLoading}
+                      className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {inviteMutation.isLoading ? '...' : 'Invite'}
+                    </button>
+                  </div>
+                </form>
+              )}
 
-            {/* Members List */}
-            <div className="space-y-3">
-              {members?.map((member: Member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={member.avatar || `https://ui-avatars.com/api/?name=${member.name}`}
-                      alt={member.name}
-                      className="h-10 w-10 rounded-full"
-                    />
-                    <div>
-                      <p className="font-medium text-gray-900">{member.name}</p>
-                      <p className="text-sm text-gray-500">{member.email}</p>
+              {/* Members List */}
+              <div className="space-y-3">
+                {members?.map((member: Member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={member.avatar || `https://ui-avatars.com/api/?name=${member.name}&background=0D8ABC&color=fff`}
+                        alt={member.name}
+                        className="h-10 w-10 rounded-full ring-2 ring-white"
+                      />
+                      <div>
+                        <p className="font-medium text-slate-900">{member.name}</p>
+                        <p className="text-sm text-slate-500">{member.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${getRoleStyle(member.role)}`}>
+                        {getRoleLabel(member.role)}
+                      </span>
+                      {member.last_accessed_at && (
+                        <span className="text-xs text-slate-400 hidden sm:block">
+                          Last active {format(new Date(member.last_accessed_at), 'MMM d')}
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${member.role === 'owner' ? 'bg-purple-100 text-purple-800' :
-                        member.role === 'admin' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                      }`}>
-                      {member.role}
-                    </span>
-                    {member.last_accessed_at && (
-                      <span className="text-xs text-gray-500">
-                        Last active {new Date(member.last_accessed_at).toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {members?.length === 0 && (
-              <div className="text-center py-8">
-                <UserGroupIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">No members yet</p>
+                ))}
               </div>
-            )}
+
+              {members?.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <UserGroupIcon className="h-8 w-8 text-slate-300" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-900">No members yet</h3>
+                  <p className="text-sm text-slate-500 mt-1">Invite team members to collaborate</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
